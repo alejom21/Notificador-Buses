@@ -62,8 +62,8 @@ export default function BusSelector({
   selectedDestinationStop,
   setSelectedDestinationStop, 
 }: BusSelectorProps) {
-  const { agencies, loading: loadingAgencies } = useAgencies();
-  const { routes, loading: loadingRoutes } = useRoutes(selectedAgency);
+  const { agencies/* , loading: loadingAgencies */ } = useAgencies();
+  const { routes/* , loading: loadingRoutes */ } = useRoutes(selectedAgency);
   const selectedRouteObj = routes.find((r) => r.tag === selectedRoute);
   
 

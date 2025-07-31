@@ -16,10 +16,12 @@ export function useAgencies() {
         const res = await fetch('https://webservices.nextbus.com/service/publicXMLFeed?command=agencyList');
         const xml = await res.text();
         const json = await xml2js.parseStringPromise(xml);
-        const list = json.body.agency.map((a: any) => ({
+
+        const list = json.body.agency.map((a: { $: { tag: string; title: string } }) => ({
           tag: a.$.tag,
           title: a.$.title,
         }));
+
         setAgencies(list);
       } catch (err) {
         console.error('Error cargando agencias', err);

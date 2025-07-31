@@ -1,4 +1,7 @@
-export const busRoutes = [
+// pages/api/buses.ts
+import { NextApiRequest, NextApiResponse } from 'next';
+
+const buses = [
   {
     id: 'bus1',
     name: 'Línea A',
@@ -12,3 +15,7 @@ export const busRoutes = [
     schedule: ['06:30', '07:30', '08:30', '09:30', '10:30'],
   },
 ];
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  res.status(200).json(buses);
+}

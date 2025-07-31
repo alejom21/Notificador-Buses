@@ -1,6 +1,8 @@
-import { useState } from 'react';
 import styled from 'styled-components';
-import { busRoutes } from '../data/buses';
+/* import { busRoutes } from '../data/buses'; */
+import { useAgencies } from '../hooks/useAgencies';
+import { useRoutes } from '../hooks/useRoutes';
+/* import { parseStringPromise } from 'xml2js'; */
 
 const SelectorContainer = styled.div`
   margin-top: 2rem;
@@ -17,50 +19,98 @@ const Select = styled.select`
   border: 1px solid #ccc;
 `;
 
-export default function BusSelector() {
-  const [selectedBusId, setSelectedBusId] = useState<string>('');
-  const [selectedStop, setSelectedStop] = useState<string>('');
+interface BusSelectorProps {
+  selectedAgency: string;
+  setSelectedAgency: (agency: string) => void;
+  selectedRoute: string;
+  setSelectedRoute: (route: string) => void;
+  selectedStop: string;
+  setSelectedStop: (stop: string) => void;
+  selectedDestinationStop: string;
+  setSelectedDestinationStop: (stop: string) => void;
+}
 
-  const selectedBus = busRoutes.find((bus) => bus.id === selectedBusId);
+export default function BusSelector({
+  selectedAgency,
+  setSelectedAgency,
+  selectedRoute,
+  setSelectedRoute,
+  selectedStop,
+  setSelectedStop,
+  selectedDestinationStop,
+  setSelectedDestinationStop, 
+}: BusSelectorProps) {
+  const { agencies, loading: loadingAgencies } = useAgencies();
+  const { routes, loading: loadingRoutes } = useRoutes(selectedAgency);
+  const selectedRouteObj = routes.find((r) => r.tag === selectedRoute);
+  
 
   return (
     <SelectorContainer>
-      <h2>Selecciona tu Bus y Paradero</h2>
-      
+      <h2>Selecciona Agencia, Ruta y Paradero</h2>
+
       <Select
-        value={selectedBusId}
+        value={selectedAgency}
         onChange={(e) => {
-          setSelectedBusId(e.target.value);
-          setSelectedStop(''); // Resetear paradero si cambia bus
+          setSelectedAgency(e.target.value);
+          setSelectedRoute('');
+          setSelectedStop('');
+          setSelectedDestinationStop(''); 
         }}
       >
-        <option value="">-- Selecciona un Bus --</option>
-        {busRoutes.map((bus) => (
-          <option key={bus.id} value={bus.id}>
-            {bus.name}
+        <option value="">-- Agencia --</option>
+        {agencies.map((a) => (
+          <option key={a.tag} value={a.tag}>
+            {a.title}
           </option>
         ))}
       </Select>
 
-      {selectedBus && (
+      {selectedAgency && (
         <Select
-          value={selectedStop}
-          onChange={(e) => setSelectedStop(e.target.value)}
+          value={selectedRoute}
+          onChange={(e) => {
+            setSelectedRoute(e.target.value);
+            setSelectedStop('');
+            setSelectedDestinationStop(''); 
+          }}
         >
-          <option value="">-- Selecciona un Paradero --</option>
-          {selectedBus.stops.map((stop, index) => (
-            <option key={index} value={stop}>
-              {stop}
+          <option value="">-- Ruta --</option>
+          {routes.map((r) => (
+            <option key={r.tag} value={r.tag}>
+              {r.title}
             </option>
           ))}
         </Select>
       )}
 
-      {selectedBusId && selectedStop && (
-        <p>
-          ✅ Bus seleccionado: <strong>{selectedBus?.name}</strong> | Paradero:{' '}
-          <strong>{selectedStop}</strong>
-        </p>
+      {selectedRoute && selectedRouteObj && (
+        <>
+          <Select 
+              value={selectedStop} 
+              onChange={(e) => {
+                setSelectedStop(e.target.value);
+              }}>
+            <option value="">-- Paradero Origen --</option>
+            {selectedRouteObj.stops.map((s) => (
+              <option key={s.stopId} value={s.title}>
+                {s.title}
+              </option>
+            ))}
+          </Select>
+
+          <Select 
+            value={selectedDestinationStop} 
+            onChange={(e) => setSelectedDestinationStop(e.target.value)}
+          >
+            <option value="">-- Paradero Destino --</option>
+            {selectedRouteObj.stops.map((s) => (
+              <option key={s.stopId} value={s.title}> 
+                {s.title}
+              </option>
+            ))}
+          </Select>
+        </>        
       )}
     </SelectorContainer>
   );

@@ -25,15 +25,17 @@ export function useRoutes(agency: string) {
         const res = await fetch(`https://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=${agency}`);
         const xml = await res.text();
         const json = await xml2js.parseStringPromise(xml);
-        const routeList = json.body.route.map((r: any) => ({
+
+        const routeList = json.body.route.map((r: { $: { tag: string; title: string }, stop: { $: { tag: string; title: string; stopId: string } }[] }) => ({
           tag: r.$.tag,
           title: r.$.title,
-          stops: r.stop.map((s: any) => ({
+          stops: r.stop.map((s: { $: { tag: string; title: string; stopId: string } }) => ({
             tag: s.$.tag,
             title: s.$.title,
             stopId: s.$.stopId,
           })),
         }));
+
         setRoutes(routeList);
       } catch (err) {
         console.error('Error cargando rutas', err);

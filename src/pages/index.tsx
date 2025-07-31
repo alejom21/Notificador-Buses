@@ -59,12 +59,12 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Reserva tu Bus</title>
+        <title>Reserva tus Buses</title>
         <meta name="description" content="Recibe alertas de tu bus favorito" />
       </Head>
       <GlobalStyle />
       <Container>
-        <h1>Reserva tu Bus</h1>
+        <h1>Reserva tus Buses</h1>
 
         <BusSelector
           selectedAgency={selectedAgency}

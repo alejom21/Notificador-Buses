@@ -1,22 +1,44 @@
 import styled from 'styled-components';
-/* import { busRoutes } from '../data/buses'; */
 import { useAgencies } from '../hooks/useAgencies';
 import { useRoutes } from '../hooks/useRoutes';
-/* import { parseStringPromise } from 'xml2js'; */
 
 const SelectorContainer = styled.div`
   margin-top: 2rem;
-  padding: 1rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  background: #f9fafb;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+`;
+
+const Title = styled.h2`
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #111827;
+  text-align: center;
+`;
+
+const SelectWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
 `;
 
 const Select = styled.select`
-  padding: 0.5rem;
-  margin-right: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background-color: white;
+  font-size: 1rem;
+  color: #374151;
+  min-width: 220px;
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    outline: none;
+  }
 `;
 
 interface BusSelectorProps {
@@ -47,9 +69,10 @@ export default function BusSelector({
 
   return (
     <SelectorContainer>
-      <h2>Selecciona Agencia, Ruta y Paradero</h2>
+      <Title>Selecciona Agencia, Ruta y Paradero</Title>
 
-      <Select
+      <SelectWrapper>
+        <Select
         value={selectedAgency}
         onChange={(e) => {
           setSelectedAgency(e.target.value);
@@ -64,9 +87,9 @@ export default function BusSelector({
             {a.title}
           </option>
         ))}
-      </Select>
+        </Select>
 
-      {selectedAgency && (
+        {selectedAgency && (
         <Select
           value={selectedRoute}
           onChange={(e) => {
@@ -82,9 +105,9 @@ export default function BusSelector({
             </option>
           ))}
         </Select>
-      )}
+        )}
 
-      {selectedRoute && selectedRouteObj && (
+        {selectedRoute && selectedRouteObj && (
         <>
           <Select 
               value={selectedStop} 
@@ -111,7 +134,8 @@ export default function BusSelector({
             ))}
           </Select>
         </>        
-      )}
+        )}
+      </SelectWrapper>
     </SelectorContainer>
   );
 }
